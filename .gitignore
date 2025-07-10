@@ -1,0 +1,8 @@
+# IDE junk
+.idea/
+.vscode/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
