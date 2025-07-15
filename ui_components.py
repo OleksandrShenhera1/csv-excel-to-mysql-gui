@@ -1,15 +1,45 @@
-from random import paretovariate
-
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QListWidget, QPushButton, QGroupBox,
-    QComboBox, QLabel, QLineEdit, QProgressBar, QTextEdit, QSizePolicy
+    QComboBox, QLabel, QLineEdit, QProgressBar, QTextEdit, QSizePolicy, QTabWidget
 )
 from PyQt6.QtCore import Qt
 from PyQt6.QtCore import pyqtSignal
 
+
+class TabsWidget(QWidget):
+    def __init__(self, table_list=None, parent=None):
+        super().__init__(parent)
+        main_layout = QHBoxLayout()
+        self.tabs = QTabWidget(self)
+        main_layout.addWidget(self.tabs)
+
+        self.seen_tables: list[str] = []
+
+        if table_list:
+            self.update_tabs(table_list)
+
+
+    def add_tab(self, name):
+        tab = QWidget()
+        layout = QHBoxLayout()
+        label = QLabel(name)
+        layout.addWidget(label, stretch=1)
+        tab.setLayout(layout)
+        self.tabs.addTab(tab, name)
+
+    def update_tabs(self, table_list):
+        for table in table_list:
+            if table not in self.seen_tables:
+                self.add_tab(table)
+                self.seen_tables.append(table)
+
+
+
 def create_main_window(parent_window):
     central_widget = QWidget()
     main_layout = QVBoxLayout(central_widget)
+
+
 
     # Search Block
 
@@ -23,6 +53,9 @@ def create_main_window(parent_window):
     parent_window.title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
     parent_window.search_line = QLineEdit()
     parent_window.search_line.setPlaceholderText("Enter key words")
+    parent_window.find_btn = QPushButton("Find")
+    parent_window.find_btn.setObjectName("chg_theme")
+    parent_window.find_btn.clicked.connect(parent_window.finddb)
     parent_window.theme_btn = QPushButton("White")
     parent_window.theme_btn.setObjectName("chg_theme")
     parent_window.theme_btn.clicked.connect(parent_window.changetheme)
@@ -39,6 +72,7 @@ def create_main_window(parent_window):
 
     upper_layout.addWidget(parent_window.title_label)
     theme_layout.addWidget(parent_window.search_line)
+    theme_layout.addWidget(parent_window.find_btn)
     theme_layout.addWidget(parent_window.theme_btn)
     upper_layout.addLayout(theme_layout)
     dir_layout.addWidget(parent_window.dir_line)
@@ -54,8 +88,7 @@ def create_main_window(parent_window):
     bottom_group = QGroupBox()
     bottom_layout = QHBoxLayout(bottom_group)
 
-    parent_window.result = QLineEdit()
-    parent_window.result.setReadOnly(True)
+    parent_window.result = TabsWidget()
     parent_window.result.setMinimumHeight(550)
     parent_window.result.setMinimumWidth(1000)
 

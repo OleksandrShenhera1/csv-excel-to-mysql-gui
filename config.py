@@ -62,6 +62,12 @@ QWidget {
     QLabel {
         font-weight: bold;
     }
+    QTabWidget {
+        background-color: #DADCE3;
+        border: 2px solid #C6C7CC;
+        border-radius: 5px;
+        padding: 3px;
+    }
 """
 
 STYLESHEET_DARK = """
@@ -127,5 +133,11 @@ QWidget {
     }
     QLabel {
         font-weight: bold;
+    }
+    QTabWidget {
+        background-color: #24283B;
+        border: 2px solid #1C202F;
+        border-radius: 5px;
+        padding: 3px;
     }
 """
