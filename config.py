@@ -68,6 +68,61 @@ QWidget {
         border-radius: 5px;
         padding: 3px;
     }
+    QTabBar::tab:selected {
+        border: 1px solid #C6C7CC;
+        border-radius: 5px;
+        font-weight: bold;
+    }
+    QScrollBar:vertical {
+        border: 1px solid #C6C7CC;
+        background: #e0e0e0;
+        border-radius: 10px;
+        width: 14px;
+        margin: 0px 0px 0px 0px;
+    }
+    QScrollBar::handle:vertical {
+        border: 2px solid #BCBEC4;
+        background: #C6C7CC;
+        border-radius: 10px;
+        min-height: 20px;
+    }
+    QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+        background: none;
+        border: none;
+        height: 0px;
+    }
+    QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
+        background: none;
+        border: none;
+    }
+    QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+        background: none;
+    }
+    QScrollBar:horizontal {
+        border: 1px solid #C6C7CC;
+        background: #e0e0e0;
+        border-radius: 10px;
+        height: 14px;
+        margin: 0px 0px 0px 0px;
+    }
+    QScrollBar::handle:horizontal {
+        border: 2px solid #BCBEC4;
+        background: #C6C7CC;
+        border-radius: 10px;
+        min-width: 20px;
+    }
+    QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
+        background: none;
+        border: none;
+        width: 0px;
+    }
+    QScrollBar::left-arrow:horizontal, QScrollBar::right-arrow:horizontal {
+        background: none;
+        border: none;
+    }
+    QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+        background: none;
+    }
 """
 
 STYLESHEET_DARK = """
@@ -139,5 +194,60 @@ QWidget {
         border: 2px solid #1C202F;
         border-radius: 5px;
         padding: 3px;
+    }
+    QTabBar::tab:selected {
+        border: 1px solid #1C202F;
+        border-radius: 5px;
+        font-weight: bold;
+    }
+    QScrollBar:vertical {
+        border: 1px solid #202334;
+        background: #232538;
+        border-radius: 8px;
+        width: 14px;
+        margin: 0px 0px 0px 0px;
+    }
+    QScrollBar::handle:vertical {
+        background: #363a4e;
+        border: 1px solid #34374d;
+        min-height: 24px;
+        border-radius: 8px;
+    }
+    QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+        background: #202334;
+        border: none;
+        height: 0px;
+    }
+    QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
+        background: none;
+        border: none;
+    }
+    QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+        background: none;
+    }
+        QScrollBar:horizontal {
+        border: 1px solid #202334;
+        background: #232538;
+        border-radius: 8px;
+        height: 14px;
+        margin: 0px 0px 0px 0px;
+    }
+    QScrollBar::handle:horizontal {
+        background: #363a4e;
+        border: 1px solid #34374d;
+        min-width: 24px;
+        border-radius: 8px;
+    }
+    QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
+        background: #202334;
+        border: none;
+        width: 0px;
+    }
+    QScrollBar::left-arrow:horizontal, QScrollBar::right-arrow:horizontal {
+        background: none;
+        border: none;
+    }
+    QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+        background: none;
     }
 """

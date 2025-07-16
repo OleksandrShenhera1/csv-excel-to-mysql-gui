@@ -5,7 +5,7 @@ from my_SQL import pushToSql
 
 
 class StartWorker(QObject):
-    finished = pyqtSignal()
+    finished = pyqtSignal(dict)
     error = pyqtSignal(str)
     def __init__(self, directory, ext, basename):
         super().__init__()
@@ -16,15 +16,15 @@ class StartWorker(QObject):
         try:
             if self.ext == '.csv':
                 dfcsv = pd.read_csv(self.directory)
-                pushToSql(dfcsv, self.basename)
+                res = pushToSql(dfcsv, self.basename)
             elif self.ext == '.json':
-                dfjson = pd.read_json(self.directory)
+                res = dfjson = pd.read_json(self.directory)
                 pushToSql(dfjson, self.basename)
             else:
                 dfxml = pd.read_xml(self.directory)
-                pushToSql(dfxml, self.basename)
+                res = pushToSql(dfxml, self.basename)
 
-            self.finished.emit()
+            self.finished.emit(res)
         except Exception as e:
             self.error.emit(str(e))
 

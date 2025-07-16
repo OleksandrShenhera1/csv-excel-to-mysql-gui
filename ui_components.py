@@ -1,36 +1,41 @@
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QListWidget, QPushButton, QGroupBox,
-    QComboBox, QLabel, QLineEdit, QProgressBar, QTextEdit, QSizePolicy, QTabWidget
+    QComboBox, QLabel, QLineEdit, QProgressBar, QTextEdit, QSizePolicy, QTabWidget, QTableWidget
 )
 from PyQt6.QtCore import Qt
 from PyQt6.QtCore import pyqtSignal
 
 
 class TabsWidget(QWidget):
-    def __init__(self, table_list=None, parent=None):
+    def __init__(self, table_dict=None, parent=None):
         super().__init__(parent)
         main_layout = QHBoxLayout()
         self.tabs = QTabWidget(self)
+        self.tabs.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         main_layout.addWidget(self.tabs)
-
+        self.setLayout(main_layout)
         self.seen_tables: list[str] = []
 
-        if table_list:
-            self.update_tabs(table_list)
+        if table_dict:
+            self.update_tabs(table_dict)
 
 
-    def add_tab(self, name):
+
+    def add_tab(self, name, col, row):
         tab = QWidget()
-        layout = QHBoxLayout()
-        label = QLabel(name)
-        layout.addWidget(label, stretch=1)
+        layout = QVBoxLayout()
+        table = QTableWidget(col, row)
+        table.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        layout.addWidget(table)
         tab.setLayout(layout)
         self.tabs.addTab(tab, name)
+        self.tabs.updateGeometry()
+        self.tabs.repaint()
 
-    def update_tabs(self, table_list):
-        for table in table_list:
+    def update_tabs(self, table_dict):
+        for table, (row, col) in table_dict.items():
             if table not in self.seen_tables:
-                self.add_tab(table)
+                self.add_tab(table, col, row)
                 self.seen_tables.append(table)
 
 
