@@ -1,11 +1,10 @@
 
 import pandas as pd
 from PyQt6.QtCore import pyqtSignal, QObject
-from my_SQL import pushToSql
-
+from my_SQL import pushToSql, readDf
 
 class StartWorker(QObject):
-    finished = pyqtSignal(dict)
+    finished = pyqtSignal(dict, dict)
     error = pyqtSignal(str)
     def __init__(self, directory, ext, basename):
         super().__init__()
@@ -15,16 +14,20 @@ class StartWorker(QObject):
     def run(self):
         try:
             if self.ext == '.csv':
-                dfcsv = pd.read_csv(self.directory)
-                res = pushToSql(dfcsv, self.basename)
-            elif self.ext == '.json':
-                res = dfjson = pd.read_json(self.directory)
-                pushToSql(dfjson, self.basename)
-            else:
-                dfxml = pd.read_xml(self.directory)
-                res = pushToSql(dfxml, self.basename)
+                df = pd.read_csv(self.directory)
 
-            self.finished.emit(res)
+            elif self.ext == '.json':
+                df = pd.read_json(self.directory)
+
+            else:
+                df = pd.read_xml(self.directory)
+
+
+            res = pushToSql(df, self.basename)
+            dfs = readDf(self.basename)
+            info = {self.basename: res[self.basename]}
+            dfs = {self.basename: df}
+            self.finished.emit(info, dfs)
         except Exception as e:
             self.error.emit(str(e))
 

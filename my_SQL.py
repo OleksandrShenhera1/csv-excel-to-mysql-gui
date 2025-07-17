@@ -12,20 +12,25 @@ db_conn = db_connector
 engine = create_engine(db_conn)
 
 table_dict = {}
+dfs = {}
 
-
+def readDf(df_name):
+    df = pd.read_sql_table(df_name, engine)
+    dfs[df_name] = df
+    return df
 
 inspector = inspect(engine)
-def tables() -> dict:
+def tables() -> tuple[dict, dict]:
     for table_name in inspector.get_table_names():
         col = inspector.get_columns(table_name)
         with engine.connect() as conn:
             result = conn.execute(text(f"SELECT COUNT(*) FROM `{table_name}`"))
             row = result.scalar()
-        table_dict[table_name] = [len(col), row]
-    return table_dict
+        table_dict[table_name] = [row, len(col)]
+        dfs[table_name] = readDf(table_name)
+    return table_dict, dfs
 
-tables()
+table_dict, dfs = tables()
 
 print(table_dict)
 
@@ -40,6 +45,5 @@ def pushToSql(df, basename) -> dict:
         result = conn.execute(text(f"SELECT COUNT(*) FROM `{basename}`"))
         row = result.scalar()
     table_dict[basename] = [len(col), row]
-    print(table_dict)
-    return table_dict
+    return {basename: [row, len(col)]}
 

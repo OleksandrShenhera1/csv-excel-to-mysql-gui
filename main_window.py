@@ -6,7 +6,7 @@ from ui_components import create_main_window
 from config import STYLESHEET_WHITE, STYLESHEET_DARK
 
 from worker import StartWorker
-from my_SQL import table_dict
+from my_SQL import table_dict, dfs
 
 import os
 
@@ -21,15 +21,16 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(main_widget)
 
         self.Tdict = table_dict
-        if self.Tdict:
-            self.add_tabs(self.Tdict)
+        self.dfs = dfs
+        if self.Tdict and self.dfs:
+            self.add_tabs(self.Tdict, self.dfs)
 
         self.style = STYLESHEET_WHITE
 
         self.setStyleSheet(self.style)
 
-    def add_tabs(self, Tdict):
-        self.result.update_tabs(Tdict)
+    def add_tabs(self, Tdict, dfs):
+        self.result.update_tabs(Tdict, dfs)
 
     def start_check(self):
         errors = []
@@ -61,9 +62,11 @@ class MainWindow(QMainWindow):
             self.worker.finished.connect(self.thread.quit)
             self.thread.start()
 
-    def on_finished(self, res):
+    def on_finished(self, info, dfs):
         self.start_search.setEnabled(True)
-        self.result.update_tabs(res)
+        self.Tdict.update(info)
+        self.dfs.update(dfs)
+        self.result.update_tabs(info, dfs)
         QMessageBox.information(self, "Success", "File Uploaded Successfully.")
 
     def on_error(self, error):

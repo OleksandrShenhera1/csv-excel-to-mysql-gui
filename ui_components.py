@@ -1,13 +1,13 @@
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QListWidget, QPushButton, QGroupBox,
-    QComboBox, QLabel, QLineEdit, QProgressBar, QTextEdit, QSizePolicy, QTabWidget, QTableWidget
+    QComboBox, QLabel, QLineEdit, QProgressBar, QTextEdit, QSizePolicy, QTabWidget, QTableWidget, QTableWidgetItem
 )
 from PyQt6.QtCore import Qt
 from PyQt6.QtCore import pyqtSignal
 
 
 class TabsWidget(QWidget):
-    def __init__(self, table_dict=None, parent=None):
+    def __init__(self, table_dict=None, dfs=None, parent=None):
         super().__init__(parent)
         main_layout = QHBoxLayout()
         self.tabs = QTabWidget(self)
@@ -16,26 +16,38 @@ class TabsWidget(QWidget):
         self.setLayout(main_layout)
         self.seen_tables: list[str] = []
 
-        if table_dict:
-            self.update_tabs(table_dict)
+        if table_dict and dfs:
+            self.update_tabs(table_dict, dfs)
 
+    def fill_table_from_dataframe(self, table_widget, df):
+        if df is None or df.empty:
+            return
+        table_widget.setRowCount(df.shape[0])
+        table_widget.setColumnCount(df.shape[1])
+        table_widget.setHorizontalHeaderLabels([str(col) for col in df.columns])
+        table_widget.setVerticalHeaderLabels([str(idx + 1) for idx in range(df.shape[0])])
+        for row in range(df.shape[0]):
+            for col in range(df.shape[1]):
+                item = QTableWidgetItem(str(df.iat[row, col]))
+                table_widget.setItem(row, col, item)
 
-
-    def add_tab(self, name, col, row):
+    def add_tab(self, name, row, col, df):
         tab = QWidget()
         layout = QVBoxLayout()
-        table = QTableWidget(col, row)
+        table = QTableWidget(row, col)
         table.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         layout.addWidget(table)
         tab.setLayout(layout)
         self.tabs.addTab(tab, name)
         self.tabs.updateGeometry()
         self.tabs.repaint()
+        self.fill_table_from_dataframe(table, df)
 
-    def update_tabs(self, table_dict):
+    def update_tabs(self, table_dict, dfs):
         for table, (row, col) in table_dict.items():
             if table not in self.seen_tables:
-                self.add_tab(table, col, row)
+                df = dfs.get(table, None)
+                self.add_tab(table, row, col, df)
                 self.seen_tables.append(table)
 
 
